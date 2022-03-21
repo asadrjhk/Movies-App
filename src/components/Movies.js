@@ -9,6 +9,8 @@ const Movies = () => {
     const [pageNumber, setPageNumber] = useState([1]);
     const [currentPage, setCurrentPage] = useState(1);
     const [movies, setMovies] = useState([]);
+
+    const [favorites,setFavorites] = useState([]);
     
 
     const hook = () => {
@@ -20,7 +22,8 @@ const Movies = () => {
             })
     }
     useEffect(hook, [currentPage]);
-
+    
+    // second part work start->
     const handleNext = () => {
         setCurrentPage(pageNumber[pageNumber.length - 1] + 1);
         setPageNumber(pageNumber.concat(pageNumber[pageNumber.length - 1] + 1));
@@ -40,6 +43,26 @@ const Movies = () => {
         }
         console.log("current-page: ", currentPage);
     }
+    // second part work end ->
+
+    const handleFavorites = (movieObj) => {
+        let oldData = JSON.parse(localStorage.getItem('movies') || '[]')
+        console.log(favorites.includes(movieObj.id));
+        if (favorites.includes(movieObj.id)) {
+            console.log('hello:', favorites)
+            oldData = oldData.filter((movie) => movie.id !== movieObj.id);
+            let temp = oldData.map((movie) => movie.id);
+            setFavorites([...temp])
+        } else {
+            oldData.push(movieObj);
+            setFavorites(favorites.concat(movieObj.id))
+            console.log("favorites: ", favorites)
+            
+        }
+        localStorage.setItem('movies', JSON.stringify(oldData))
+        console.log(oldData);
+    }
+    
     return (
          <>
             { movies.length === 0 ? (
@@ -55,12 +78,13 @@ const Movies = () => {
                                return (
                                 <Card  key={movieObj.id} style={{ width: '18rem' }} onMouseEnter={() => setHover(movieObj.id)} onMouseLeave={() => setHover('')}>
                                     <Card.Header>Featured</Card.Header>
-                                    <Card.Img variant="top" src={`https://image.tmdb.org/t/p/original${movieObj.backdrop_path}`}/>
+                                    <Card.Img variant="top" src={`https://image.tmdb.org/t/p/original${movieObj.backdrop_pat}`}/>
                                     <Card.Body>
                                     <Card.Title>{movieObj.title}</Card.Title>
                                     <Card.Text>{movieObj.overview.substring(0,100)}...</Card.Text>
+                                    <Button>More</Button> {"  "}
                                     { 
-                                        hover === movieObj.id &&  <Button variant="primary">Add to Favorite</Button>
+                                        hover === movieObj.id &&  <Button variant="primary" onClick={() => handleFavorites(movieObj)}>{favorites.includes(movieObj.id) ? "Remove from favorites" : "Add to favorites"}</Button>
                                     }
                                     
                                     </Card.Body>
