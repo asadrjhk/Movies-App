@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {movies} from './getMovies'
 import {Card} from 'react-bootstrap';
 
 const Hero = () => {
-    const movie = movies.results[0];
-    console.log(movie)
+    const index = Math.floor(Math.random() * movies.results.length);
+    console.log(index);
+    const movie = movies.results[index];
+    
+     
     return (
         <div>
            <Card>

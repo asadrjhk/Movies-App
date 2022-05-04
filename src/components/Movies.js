@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import {Spinner, Card, Button, Pagination} from 'react-bootstrap';
 
-const API_URL = 'https://api.themoviedb.org/3/movie/popular?api_key=5540e483a20e0b20354dabc2d66a31c9&language=en-US&page=';
+const apiKey = process.env.REACT_APP_API_KEY;
+const API_URL = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=en-US&page=`;
+
 
 const Movies = () => {
     const [hover, setHover] = useState('');
@@ -20,6 +22,10 @@ const Movies = () => {
                 console.log(data);
                 setMovies([...data.results])
             })
+
+        let oldData = JSON.parse(localStorage.getItem('movies') || '[]')  
+        let temp = oldData.map((movie) => movie.id);
+        setFavorites([...temp])
     }
     useEffect(hook, [currentPage]);
     
@@ -78,7 +84,7 @@ const Movies = () => {
                                return (
                                 <Card  key={movieObj.id} style={{ width: '18rem' }} onMouseEnter={() => setHover(movieObj.id)} onMouseLeave={() => setHover('')}>
                                     <Card.Header>Featured</Card.Header>
-                                    <Card.Img variant="top" src={`https://image.tmdb.org/t/p/original${movieObj.backdrop_pat}`}/>
+                                    <Card.Img variant="top" src={`https://image.tmdb.org/t/p/original${movieObj.backdrop_path}`}/>
                                     <Card.Body>
                                     <Card.Title>{movieObj.title}</Card.Title>
                                     <Card.Text>{movieObj.overview.substring(0,100)}...</Card.Text>
